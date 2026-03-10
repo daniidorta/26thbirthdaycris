@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Urbano</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#111;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:#1f1f1f;
+padding:40px;
+border-radius:12px;
+width:420px;
+text-align:center;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+button{
+padding:12px 20px;
+margin-top:20px;
+border:none;
+background:#00c2ff;
+color:white;
+font-size:16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0099cc;
+}
+
+input{
+padding:10px;
+width:80%;
+margin-top:15px;
+border-radius:6px;
+border:none;
+}
+
+#qr{
+display:none;
+margin-top:25px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2 id="pregunta"></h2>
+
+<input id="respuesta" placeholder="Tu respuesta">
+
+<br>
+
+<button onclick="verificar()">Responder</button>
+
+<p id="error"></p>
+
+<div id="qr">
+
+<h3>🎉 Has completado el quiz</h3>
+
+<p>Escanea tu código:</p>
+
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PREMIO-SECRETO">
+
+</div>
+
+</div>
+
+<script>
+
+let preguntas = [
+{
+pregunta:"¿Capital de España?",
+respuesta:"madrid"
+},
+{
+pregunta:"¿Ciudad famosa por la Sagrada Familia?",
+respuesta:"barcelona"
+},
+{
+pregunta:"¿Río que pasa por Sevilla?",
+respuesta:"guadalquivir"
+}
+]
+
+let actual = 0
+
+function cargarPregunta(){
+
+document.getElementById("pregunta").innerText =
+preguntas[actual].pregunta
+
+}
+
+function verificar(){
+
+let r = document
+.getElementById("respuesta")
+.value
+.toLowerCase()
+
+if(r === preguntas[actual].respuesta){
+
+actual++
+
+document.getElementById("respuesta").value=""
+document.getElementById("error").innerText=""
+
+if(actual < preguntas.length){
+
+cargarPregunta()
+
+}else{
+
+document.getElementById("pregunta").innerText=""
+
+document.getElementById("respuesta").style.display="none"
+
+document.querySelector("button").style.display="none"
+
+document.getElementById("qr").style.display="block"
+
+}
+
+}else{
+
+document.getElementById("error").innerText="Incorrecto"
+
+}
+
+}
+
+cargarPregunta()
+
+</script>
+
+</body>
+</html>
