@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Quiz</title>
+<title>Quiz Regalo</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
@@ -33,24 +33,26 @@ color:white;
 backdrop-filter:blur(20px);
 background:rgba(255,255,255,0.08);
 border:1px solid rgba(255,255,255,0.15);
-padding:45px;
-width:420px;
+padding:40px;
+width:90%;
+max-width:420px;
 border-radius:20px;
 text-align:center;
 box-shadow:0 20px 60px rgba(0,0,0,0.6);
-animation:fade 1s ease;
 }
 
-@keyframes fade{
-from{opacity:0; transform:translateY(30px)}
-to{opacity:1; transform:translateY(0)}
+/* portada */
+
+.coverImg{
+width:80%;
+max-width:260px;
+margin-bottom:25px;
 }
 
 h1{
 font-weight:800;
 letter-spacing:2px;
-font-size:26px;
-margin-bottom:25px;
+font-size:24px;
 }
 
 h2{
@@ -58,10 +60,50 @@ font-weight:600;
 margin-bottom:25px;
 }
 
-.coverImg{
-width:200px;
+/* barra progreso */
+
+.progress{
+width:100%;
+height:6px;
+background:rgba(255,255,255,0.2);
+border-radius:20px;
 margin-bottom:25px;
+overflow:hidden;
 }
+
+.progressBar{
+height:100%;
+width:0%;
+background:white;
+transition:0.4s;
+}
+
+/* imagenes respuesta */
+
+.iconTop,
+.iconWrong{
+width:90%;
+max-width:360px;
+margin:0 auto 20px auto;
+display:none;
+}
+
+.drop{animation:drop 0.6s ease;}
+@keyframes drop{
+0%{transform:translateY(-80px);opacity:0}
+100%{transform:translateY(0);opacity:1}
+}
+
+.shake{animation:shake 0.5s;}
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-8px)}
+50%{transform:translateX(8px)}
+75%{transform:translateX(-8px)}
+100%{transform:translateX(0)}
+}
+
+/* input */
 
 input{
 width:100%;
@@ -88,9 +130,7 @@ cursor:pointer;
 transition:0.25s;
 }
 
-button:hover{
-transform:scale(1.05);
-}
+button:hover{transform:scale(1.05);}
 
 #resultado{
 margin-top:20px;
@@ -101,14 +141,37 @@ font-weight:600;
 .correct{color:#4cff6a;}
 .incorrect{color:#ff4c4c;}
 
-.iconTop{
-width:200px;
-margin-bottom:20px;
-display:none;
+.hidden{display:none;}
+
+/* animacion regalo */
+
+.giftBox{
+width:180px;
+margin:20px auto;
+animation:bounce 1s infinite alternate;
 }
 
-.hidden{
+@keyframes bounce{
+from{transform:translateY(0)}
+to{transform:translateY(-10px)}
+}
+
+.qr{
+width:200px;
+margin-top:20px;
 display:none;
+animation:fade 1s ease;
+}
+
+@keyframes fade{
+from{opacity:0; transform:scale(0.8)}
+to{opacity:1; transform:scale(1)}
+}
+
+.finalText{
+font-weight:800;
+margin-top:20px;
+font-size:20px;
 }
 
 </style>
@@ -134,7 +197,12 @@ display:none;
 
 <div id="quiz" class="hidden">
 
+<div class="progress">
+<div id="progressBar" class="progressBar"></div>
+</div>
+
 <img id="correctIcon" class="iconTop" src="correct.png">
+<img id="wrongIcon" class="iconWrong" src="wrong.png">
 
 <h2 id="pregunta"></h2>
 
@@ -144,17 +212,21 @@ display:none;
 
 <div id="resultado"></div>
 
-<img id="wrongIcon" src="wrong.png" width="70" style="display:none; margin-top:15px;">
-
 </div>
 
 <!-- FINAL -->
 
 <div id="final" class="hidden">
 
-<h1>🎉 REGALO DESBLOQUEADO 🎉</h1>
+<img src="gift.png" class="giftBox" onclick="openGift()">
 
-<p>Ahora toca recibir tu sorpresa...</p>
+<div class="finalText">
+HAS GANADO! <br>
+DISFRUTA DEL PREMIO. <br>
+FELIZ CUMPLEAÑOS!
+</div>
+
+<img id="qr" class="qr" src="qr.png">
 
 </div>
 
@@ -164,7 +236,7 @@ display:none;
 
 <script>
 
-let preguntas = [
+let preguntas=[
 
 {p:"¿Cuál fue nuestro primer viaje?",r:"roma"},
 {p:"¿Dónde nos conocimos?",r:"lugar"},
@@ -197,12 +269,17 @@ document.getElementById("pregunta").innerText=preguntas[actual].p
 document.getElementById("respuesta").value=""
 document.getElementById("resultado").innerText=""
 
+document.getElementById("correctIcon").style.display="none"
+document.getElementById("wrongIcon").style.display="none"
+
+let progreso=(actual/preguntas.length)*100
+document.getElementById("progressBar").style.width=progreso+"%"
+
 }
 
 function verificar(){
 
 let r=document.getElementById("respuesta").value.toLowerCase()
-
 let correcta=preguntas[actual].r
 
 let resultado=document.getElementById("resultado")
@@ -218,6 +295,7 @@ resultado.innerText="Correcto 🎉"
 resultado.className="correct"
 
 correctIcon.style.display="block"
+correctIcon.classList.add("drop")
 
 confetti({
 particleCount:200,
@@ -249,8 +327,20 @@ resultado.innerText="Incorrecto"
 resultado.className="incorrect"
 
 wrongIcon.style.display="block"
+wrongIcon.classList.add("shake")
 
 }
+
+}
+
+function openGift(){
+
+document.getElementById("qr").style.display="block"
+
+confetti({
+particleCount:500,
+spread:200
+})
 
 }
 
