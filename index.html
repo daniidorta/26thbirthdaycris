@@ -4,13 +4,11 @@
 <meta charset="UTF-8">
 <title>Quiz</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
 font-family:'Inter',sans-serif;
@@ -22,6 +20,7 @@ justify-content:center;
 background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#000);
 background-size:400% 400%;
 animation:gradient 12s ease infinite;
+color:white;
 }
 
 @keyframes gradient{
@@ -31,19 +30,14 @@ animation:gradient 12s ease infinite;
 }
 
 .container{
-
-backdrop-filter: blur(20px);
+backdrop-filter:blur(20px);
 background:rgba(255,255,255,0.08);
 border:1px solid rgba(255,255,255,0.15);
-
 padding:45px;
 width:420px;
 border-radius:20px;
 text-align:center;
-color:white;
-
 box-shadow:0 20px 60px rgba(0,0,0,0.6);
-
 animation:fade 1s ease;
 }
 
@@ -52,122 +46,116 @@ from{opacity:0; transform:translateY(30px)}
 to{opacity:1; transform:translateY(0)}
 }
 
+h1{
+font-weight:800;
+letter-spacing:2px;
+font-size:26px;
+margin-bottom:25px;
+}
+
 h2{
 font-weight:600;
-margin-bottom:30px;
+margin-bottom:25px;
+}
+
+.coverImg{
+width:200px;
+margin-bottom:25px;
 }
 
 input{
-
 width:100%;
 padding:14px;
-
 border-radius:10px;
 border:none;
-
 background:rgba(255,255,255,0.12);
 color:white;
-
 font-size:16px;
-
 outline:none;
-
-}
-
-input::placeholder{
-color:rgba(255,255,255,0.6);
 }
 
 button{
-
 margin-top:20px;
-
 width:100%;
 padding:14px;
-
 border:none;
 border-radius:10px;
-
 background:white;
 color:black;
-
 font-weight:600;
 font-size:16px;
-
 cursor:pointer;
-
 transition:0.25s;
-
 }
 
 button:hover{
 transform:scale(1.05);
 }
 
-/* RESULTADO CON IMAGEN */
-
-.resultadoBox{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:15px;
-margin-top:25px;
-}
-
 #resultado{
+margin-top:20px;
 font-size:18px;
 font-weight:600;
 }
 
-.correct{
-color:#4cff6a;
-}
+.correct{color:#4cff6a;}
+.incorrect{color:#ff4c4c;}
 
-.incorrect{
-color:#ff4c4c;
-animation:shake 0.4s;
-}
-
-@keyframes shake{
-
-0%{transform:translateX(0)}
-25%{transform:translateX(-6px)}
-50%{transform:translateX(6px)}
-75%{transform:translateX(-6px)}
-100%{transform:translateX(0)}
-
-}
-
-.icon{
-width:70px;
+.iconTop{
+width:200px;
+margin-bottom:20px;
 display:none;
-animation:pop 0.4s;
 }
 
-@keyframes pop{
-0%{transform:scale(0)}
-100%{transform:scale(1)}
+.hidden{
+display:none;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>¿Cuál fue nuestro primer viaje?</h2>
+<!-- PORTADA -->
+
+<div id="cover">
+
+<img src="cover.png" class="coverImg">
+
+<h1>QUIZ PARA DESBLOQUEAR TU REGALO</h1>
+
+<button onclick="startQuiz()">COMENZAR</button>
+
+</div>
+
+<!-- QUIZ -->
+
+<div id="quiz" class="hidden">
+
+<img id="correctIcon" class="iconTop" src="correct.png">
+
+<h2 id="pregunta"></h2>
 
 <input id="respuesta" placeholder="Escribe tu respuesta">
 
 <button onclick="verificar()">Responder</button>
 
-<div class="resultadoBox">
 <div id="resultado"></div>
 
-<img id="correctIcon" class="icon" src="correct.png">
-<img id="wrongIcon" class="icon" src="wrong.png">
+<img id="wrongIcon" src="wrong.png" width="70" style="display:none; margin-top:15px;">
+
+</div>
+
+<!-- FINAL -->
+
+<div id="final" class="hidden">
+
+<h1>🎉 REGALO DESBLOQUEADO 🎉</h1>
+
+<p>Ahora toca recibir tu sorpresa...</p>
+
 </div>
 
 </div>
@@ -176,18 +164,55 @@ animation:pop 0.4s;
 
 <script>
 
+let preguntas = [
+
+{p:"¿Cuál fue nuestro primer viaje?",r:"roma"},
+{p:"¿Dónde nos conocimos?",r:"lugar"},
+{p:"¿Cuál es mi comida favorita?",r:"pizza"},
+{p:"¿Qué día empezamos a salir?",r:"fecha"},
+{p:"¿Mi color favorito?",r:"negro"},
+{p:"¿Ciudad favorita para viajar?",r:"paris"},
+{p:"¿Mi serie favorita?",r:"serie"},
+{p:"¿Qué animal me gusta más?",r:"perro"},
+{p:"¿Mi postre favorito?",r:"helado"},
+{p:"¿Qué país quiero visitar contigo?",r:"japon"},
+{p:"¿Cuál fue nuestra primera foto juntos?",r:"lugar"}
+
+]
+
+let actual=0
+
+function startQuiz(){
+
+document.getElementById("cover").style.display="none"
+document.getElementById("quiz").style.display="block"
+
+mostrarPregunta()
+
+}
+
+function mostrarPregunta(){
+
+document.getElementById("pregunta").innerText=preguntas[actual].p
+document.getElementById("respuesta").value=""
+document.getElementById("resultado").innerText=""
+
+}
+
 function verificar(){
 
-let r = document.getElementById("respuesta").value.toLowerCase()
+let r=document.getElementById("respuesta").value.toLowerCase()
 
-let resultado = document.getElementById("resultado")
-let correctIcon = document.getElementById("correctIcon")
-let wrongIcon = document.getElementById("wrongIcon")
+let correcta=preguntas[actual].r
+
+let resultado=document.getElementById("resultado")
+let correctIcon=document.getElementById("correctIcon")
+let wrongIcon=document.getElementById("wrongIcon")
 
 correctIcon.style.display="none"
 wrongIcon.style.display="none"
 
-if(r==="madrid"){
+if(r===correcta){
 
 resultado.innerText="Correcto 🎉"
 resultado.className="correct"
@@ -195,10 +220,28 @@ resultado.className="correct"
 correctIcon.style.display="block"
 
 confetti({
-particleCount:250,
+particleCount:200,
 spread:120,
 origin:{y:0.6}
 })
+
+actual++
+
+if(actual<preguntas.length){
+
+setTimeout(mostrarPregunta,1200)
+
+}else{
+
+document.getElementById("quiz").style.display="none"
+document.getElementById("final").style.display="block"
+
+confetti({
+particleCount:400,
+spread:180
+})
+
+}
 
 }else{
 
