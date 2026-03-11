@@ -2,56 +2,151 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Quiz Urbano</title>
+<title>Quiz</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
-font-family: Arial;
-background:#111;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+font-family:'Inter',sans-serif;
 margin:0;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#000);
+background-size:400% 400%;
+animation:gradient 12s ease infinite;
+}
+
+@keyframes gradient{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
 
 .container{
-background:#1f1f1f;
-padding:40px;
-border-radius:12px;
+
+backdrop-filter: blur(20px);
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.15);
+
+padding:45px;
 width:420px;
+border-radius:20px;
 text-align:center;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
-}
-
-button{
-padding:12px 20px;
-margin-top:20px;
-border:none;
-background:#00c2ff;
 color:white;
-font-size:16px;
-border-radius:6px;
-cursor:pointer;
+
+box-shadow:0 20px 60px rgba(0,0,0,0.6);
+
+animation:fade 1s ease;
 }
 
-button:hover{
-background:#0099cc;
+@keyframes fade{
+from{opacity:0; transform:translateY(30px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+h2{
+font-weight:600;
+margin-bottom:30px;
 }
 
 input{
-padding:10px;
-width:80%;
-margin-top:15px;
-border-radius:6px;
+
+width:100%;
+padding:14px;
+
+border-radius:10px;
 border:none;
+
+background:rgba(255,255,255,0.12);
+color:white;
+
+font-size:16px;
+
+outline:none;
+
 }
 
-#qr{
-display:none;
+input::placeholder{
+color:rgba(255,255,255,0.6);
+}
+
+button{
+
+margin-top:20px;
+
+width:100%;
+padding:14px;
+
+border:none;
+border-radius:10px;
+
+background:white;
+color:black;
+
+font-weight:600;
+font-size:16px;
+
+cursor:pointer;
+
+transition:0.25s;
+
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+/* RESULTADO CON IMAGEN */
+
+.resultadoBox{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:15px;
 margin-top:25px;
+}
+
+#resultado{
+font-size:18px;
+font-weight:600;
+}
+
+.correct{
+color:#4cff6a;
+}
+
+.incorrect{
+color:#ff4c4c;
+animation:shake 0.4s;
+}
+
+@keyframes shake{
+
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-6px)}
+100%{transform:translateX(0)}
+
+}
+
+.icon{
+width:70px;
+display:none;
+animation:pop 0.4s;
+}
+
+@keyframes pop{
+0%{transform:scale(0)}
+100%{transform:scale(1)}
 }
 
 </style>
@@ -62,93 +157,59 @@ margin-top:25px;
 
 <div class="container">
 
-<h2 id="pregunta"></h2>
+<h2>¿Cuál fue nuestro primer viaje?</h2>
 
-<input id="respuesta" placeholder="Tu respuesta">
-
-<br>
+<input id="respuesta" placeholder="Escribe tu respuesta">
 
 <button onclick="verificar()">Responder</button>
 
-<p id="error"></p>
+<div class="resultadoBox">
+<div id="resultado"></div>
 
-<div id="qr">
-
-<h3>🎉 Has completado el quiz</h3>
-
-<p>Escanea tu código:</p>
-
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PREMIO-SECRETO">
-
+<img id="correctIcon" class="icon" src="correct.png">
+<img id="wrongIcon" class="icon" src="wrong.png">
 </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
 
-let preguntas = [
-{
-pregunta:"¿Capital de España?",
-respuesta:"madrid"
-},
-{
-pregunta:"¿Ciudad famosa por la Sagrada Familia?",
-respuesta:"barcelona"
-},
-{
-pregunta:"¿Río que pasa por Sevilla?",
-respuesta:"guadalquivir"
-}
-]
-
-let actual = 0
-
-function cargarPregunta(){
-
-document.getElementById("pregunta").innerText =
-preguntas[actual].pregunta
-
-}
-
 function verificar(){
 
-let r = document
-.getElementById("respuesta")
-.value
-.toLowerCase()
+let r = document.getElementById("respuesta").value.toLowerCase()
 
-if(r === preguntas[actual].respuesta){
+let resultado = document.getElementById("resultado")
+let correctIcon = document.getElementById("correctIcon")
+let wrongIcon = document.getElementById("wrongIcon")
 
-actual++
+correctIcon.style.display="none"
+wrongIcon.style.display="none"
 
-document.getElementById("respuesta").value=""
-document.getElementById("error").innerText=""
+if(r==="madrid"){
 
-if(actual < preguntas.length){
+resultado.innerText="Correcto 🎉"
+resultado.className="correct"
 
-cargarPregunta()
+correctIcon.style.display="block"
 
-}else{
-
-document.getElementById("pregunta").innerText=""
-
-document.getElementById("respuesta").style.display="none"
-
-document.querySelector("button").style.display="none"
-
-document.getElementById("qr").style.display="block"
-
-}
+confetti({
+particleCount:250,
+spread:120,
+origin:{y:0.6}
+})
 
 }else{
 
-document.getElementById("error").innerText="Incorrecto"
+resultado.innerText="Incorrecto"
+resultado.className="incorrect"
+
+wrongIcon.style.display="block"
 
 }
 
 }
-
-cargarPregunta()
 
 </script>
 
