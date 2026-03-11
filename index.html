@@ -149,6 +149,7 @@ font-weight:600;
 width:180px;
 margin:20px auto;
 animation:bounce 1s infinite alternate;
+cursor:pointer;
 }
 
 @keyframes bounce{
@@ -156,11 +157,20 @@ from{transform:translateY(0)}
 to{transform:translateY(-10px)}
 }
 
+/* video youtube */
+
 .qr{
-width:200px;
+width:100%;
+max-width:420px;
 margin-top:20px;
 display:none;
 animation:fade 1s ease;
+}
+
+.qr iframe{
+width:100%;
+height:315px;
+border-radius:12px;
 }
 
 @keyframes fade{
@@ -226,9 +236,17 @@ DISFRUTA DEL PREMIO. <br>
 FELIZ CUMPLEAÑOS!
 </div>
 
-<video id="videoRegalo" class="qr" controls>
-<source src="video.mp4" type="video/mp4">
-</video>
+<div id="videoRegalo" class="qr">
+
+<iframe
+src="https://www.youtube.com/embed/rKkz5YmDSdA"
+title="Video regalo"
+frameborder="0"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+allowfullscreen>
+</iframe>
+
+</div>
 
 </div>
 
@@ -248,7 +266,6 @@ let preguntas=[
 {p:"¿De qué nos disfrazamos en los Carnavales de Ciudad Rodrigo?",r:"pintor"},
 {p:"Montaña Rusa del Parque Warner en la que nos montamos 3 veces seguidas",r:"stunt fall"},
 {p:"¿De que queríamos vivir en el futuro?",r:"cosecha"},
-{p:"¿Mi postre favorito?",r:"helado"},
 {p:"¿Cuándo nos hicimos nuestra primera foto juntos?",r:"filomena"},
 {p:"¿Cuál es nuestra forma de llamar a los noodles?",r:"woki woki"}
 
@@ -337,7 +354,7 @@ wrongIcon.classList.add("shake")
 
 function openGift(){
 
-document.getElementById("qr").style.display="block"
+document.getElementById("videoRegalo").style.display="block"
 
 confetti({
 particleCount:500,
